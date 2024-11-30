@@ -49,6 +49,7 @@ class Frame:
     dont_discharge = False
     def print(self):
         return f"price: {self.price}, at {self.startsAt}, charge/dont discharge: {self.do_charge},{self.dont_discharge}, sol: {self.prod}, pull: {self.pull}, push: {self.push}"
+
 #init
 for i in range(N):
     data.append(Frame(start_time + dt.timedelta(minutes = 15*i)))
@@ -102,7 +103,7 @@ def read_solcast():
             if ptime >= start_time and i < N:
                 data[i].prod = float(row['PvEstimate']) / 2
                 data[i+1].prod = float(row['PvEstimate']) / 2
-                print(ptime, data[i].startsAt, data[i].prod, i)
+                #print(ptime, data[i].startsAt, data[i].prod, i)
                 i += 2
 
 
@@ -162,11 +163,12 @@ def read_analyse_tibber(start_time):
             unpeaks, _ = find_peaks(-price[:w1])
             unpeaks = sorted(unpeaks, key= lambda x: price[x], reverse=False)
             print("uneaks",unpeaks)
-            unpeak = unpeaks[0]
-            unw1, unw2 = peak_widths(-price[:w1], unpeaks)[2:4]
-            unw1 = math.ceil(unw1[0])
-            unw2 = int(unw2[0])
-            print(f"unpeak: {unpeak}, windows: {unw1} - {unw2}")
+            if len(unpeaks) > 0:
+                unpeak = unpeaks[0]
+                unw1, unw2 = peak_widths(-price[:w1], unpeaks)[2:4]
+                unw1 = math.ceil(unw1[0])
+                unw2 = int(unw2[0])
+                print(f"unpeak: {unpeak}, windows: {unw1} - {unw2}")
 
         
     return pmin, pmax, pavg, pstd
@@ -236,76 +238,92 @@ def calculation(p1,p2, charge_power):
 
     return cost_acc
 
-read_consumption()
-read_solcast()
-#print("solcast:", solcast)
-price_min, price_max, price_avg, price_std = read_analyse_tibber(start_time)
+def calc(debug = 0):
+    global start_time
+    start_time = dt.datetime.now(tz=pytz.UTC)
+    read_consumption()
+    read_solcast()
+    #print("solcast:", solcast)
+    price_min, price_max, price_avg, price_std = read_analyse_tibber(start_time)
 
-# read from battery:
-capa, state = readKapaitätAndState()
-if capa > 5 and capa < 100 and state < capa and state > 0:
-    start_battery = state
-    max_battery_capacity = capa
-print(f"read from battery capa:{capa}, state:{state}")
+    # read from battery:
+    capa, state = readKapaitätAndState()
+    if capa > 5 and capa < 100 and state < capa and state > 0:
+        start_battery = state
+        max_battery_capacity = capa
+    print(f"read from battery capa:{capa}, state:{state}")
 
-c = calculation(0,0,0)
-print("Costs without interfere:", c)
-cost_without_interfere = c
-charge_at = 0
-discharge_over_price = []
-for p in np.arange(price_min-0.01,price_max+0.01,0.01):
-    c = calculation(p,charge_at,0)
-    discharge_over_price.append((p,c,data[-1].soc))
-
-min_cost = min(discharge_over_price, key = lambda x: x[1])
-
-discharge_at = min_cost[0]
-print("discharge at:", discharge_at, min_cost)
-
-# soc at end of minimal cost zero? Try with charging
-if min_cost[2] < 0.1:
-    
-    charge_over_price = []
+    c = calculation(0,0,0)
+    print("Costs without interfere:", c)
+    cost_without_interfere = c
+    charge_at = 0
+    discharge_over_price = []
     for p in np.arange(price_min-0.01,price_max+0.01,0.01):
-        c = calculation(price_avg,p,1)
-        charge_over_price.append((p,c,data[-1].soc))
+        c = calculation(p,charge_at,0)
+        discharge_over_price.append((p,c,data[-1].soc))
 
-    min_cost = min(charge_over_price, key = lambda x: x[1])
+    min_cost = min(discharge_over_price, key = lambda x: x[1])
 
-    # use charge only when we have benefit! 
-    if min_cost[1] < cost_without_interfere:
-        discharge_at = price_avg
-        charge_at = min_cost[0]
-        print("best charge point:", min_cost)
+    discharge_at = min_cost[0]
+    print("discharge at:", discharge_at, min_cost)
 
-print(f"forbidd discharge when below: {discharge_at}, charge when below: {charge_at}")
+    # soc at end of minimal cost zero? Try with charging
+    if min_cost[2] < 0.1:
+        
+        charge_over_price = []
+        for p in np.arange(price_min-0.01,price_max+0.01,0.01):
+            c = calculation(price_avg,p,1)
+            charge_over_price.append((p,c,data[-1].soc))
 
-price = calculation(discharge_at,charge_at,1)
+        min_cost = min(charge_over_price, key = lambda x: x[1])
 
-print(f"price: {price}, production sum: {data[-1].prod_acc}, consumption sum: {data[-1].cons_acc}")
+        # use charge only when we have benefit! 
+        if min_cost[1] < cost_without_interfere:
+            discharge_at = price_avg
+            charge_at = min_cost[0]
+            print("best charge point:", min_cost)
 
-for d in data:
-    print(d.print())
+    print(f"forbidd discharge when below: {discharge_at}, charge when below: {charge_at}")
+
+    price = calculation(discharge_at,charge_at,1)
+
+    print(f"price: {price}, production sum: {data[-1].prod_acc}, consumption sum: {data[-1].cons_acc}")
+
+    if debug:
+        for d in data:
+            print(d.print())
 
 
 
-fig, (ax1, ax2, ax3) = plt.subplots(3)
+        fig, (ax1, ax2, ax3) = plt.subplots(3)
 
 
-ax12 = ax1.twinx()
-ax12.plot([d.price for d in data],  color='orange')
-ax1.plot([d.prod for d in data], color='green')
-ax1.plot([d.cons for d in data], color='red')
+        ax12 = ax1.twinx()
+        ax12.plot([d.price for d in data],  color='orange')
+        ax1.plot([d.prod for d in data], color='green')
+        ax1.plot([d.cons for d in data], color='red')
 
-ax2.plot([d.push for d in data], color='green')
-ax2.plot([d.pull for d in data], color='red')
-ax22 = ax2.twinx()
-ax22.plot([d.soc for d in data], color='gray')
+        ax2.plot([d.push for d in data], color='green')
+        ax2.plot([d.pull for d in data], color='red')
+        ax22 = ax2.twinx()
+        ax22.plot([d.soc for d in data], color='gray')
 
-ax3.plot([d.cost for d in data], color='red')
-ax32 = ax3.twinx()
-ax32.plot([d.cost_acc for d in data], color='orange')
-ax32.plot([d.original_cost_acc for d in data], color='darkorange')
+        ax3.plot([d.cost for d in data], color='red')
+        ax32 = ax3.twinx()
+        ax32.plot([d.cost_acc for d in data], color='orange')
+        ax32.plot([d.original_cost_acc for d in data], color='darkorange')
 
-plt.show()
-exit()
+        plt.show()
+
+    return data[0].do_charge, data[0].dont_discharge
+
+if __name__ == '__main__':
+    do_charge, dont_discharge = calc(debug=1)
+    print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
+
+def getBatteryActions():
+    do_charge, dont_discharge = calc(debug=0)
+    print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
+    return do_charge, dont_discharge
+
+
