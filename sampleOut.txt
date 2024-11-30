@@ -1,0 +1,179 @@
+30051 : 8007 - : Geräteklasse
+30053 : 9332 - : Gerätetyp
+30055 : 461 - : Hersteller
+30057 : -1292327501 - : Seriennummer
+30059 : 53480452 - : Softwarepaket
+30199 : 0 s : Wartezeit bis Einspeisung
+30201 : 307 - : Zustand
+30203 : 0 W : Nennleistung im Zustand Ok
+30205 : 0 W : Nennleistung im Zustand Warnung
+30207 : 0 W : Nennleistung im Zustand Fehler
+30211 : 887 - : Empfohlene Aktion
+30213 : 886 - : Meldung
+30215 : 885 - : Fehlerbehebungsmaßnahme
+30231 : 3300 W : Bemessungswirkleistung WMaxOutRtg
+30233 : 3300 W : Nennwirkleistung WMaxOut
+30247 : -1 - : Aktuelle Ereignisnummer für Hersteller
+30251 : 16777213 - : Verriegelungsstatus
+30513 : 0 Wh : Gesamtertrag
+30529 : 1916864 Wh : Gesamtertrag
+30531 : 1917 kWh : Gesamtertrag
+30533 : 2 MWh : Gesamtertrag
+30559 : 527 - : Anzahl Ereignisse für Benutzer
+30561 : 1258 - : Anzahl Ereignisse für Installateur
+30563 : 574 - : Anzahl Ereignisse für Service
+30565 : 0 - : Anzahl Generatorstarts
+30567 : 12668 Ah : Zähler für Amperestunden Batterieladung
+30569 : 12590 Ah : Zähler für Amperestunden Batterieentladung
+30571 : 3853302 Wh : Zählerstand Verbrauchszähler
+30577 : 3404 Wh : Netzbezug heute
+30579 : 61 Wh : Ins Netz eingespeiste Energie (heute)
+30581 : 21227880 Wh : Zählerstand Bezugszähler
+30583 : 9890770 Wh : Zählerstand Einspeisezähler
+30585 : 3 s : Netzausfallzeit
+30587 : 0 Wh : Zählerstand PV-Erzeugungszähler
+30589 : -1 Wh : Eigenverbrauchserhöhung
+30591 : -1 Wh : Eigenverbrauchserhöhung heute
+30593 : -1 Wh : Eigenverbrauchte Energie
+30595 : 2432818 Wh : Aufgenommene Energie
+30597 : 1916864 Wh : Abgegebene Energie
+30599 : 1282 - : Anzahl Netzzuschaltungen
+30775 : -155 W : Leistung
+30777 : -146 W : Leistung L1
+30779 : 0 W : Leistung L2
+30781 : 0 W : Leistung L3
+30783 : 23184 V : Netzspannung Phase L1
+30785 : 0 V : Netzspannung Phase L2
+30787 : 0 V : Netzspannung Phase L3
+30803 : 5004 Hz : Netzfrequenz
+30807 : -89 VAr : Blindleistung L1
+30809 : 0 VAr : Blindleistung L2
+30811 : 0 VAr : Blindleistung L3
+30843 : -2458 A : Batteriestrom
+30845 : 33 % : Aktueller Batterieladezustand
+30847 : 100 % : Aktuelle Batteriekapazität
+30849 : 197 °C : Batterietemperatur
+30851 : 5205 V : Batteriespannung
+30857 : 30 - : Anzahl Ladungsdurchsätze der Batterie
+30859 : 1772 - : Zustand Wartungsladung der Batterie
+30861 : 0 W : Leistung Verbraucher
+30863 : 0 W : Aktuelle Generatorleistung
+30865 : 0 W : Leistung Bezug
+30867 : 2 W : Leistung Einspeisung
+30869 : 0 W : Leistung PV-Erzeugung
+30873 : -2147483648 W : Momentane Eigenverbrauchserhöhung
+30877 : 1461 - : Status Stromversorgung
+30879 : 46 - : Grund für Generatoranforderung
+30881 : 1780 - : Netzanbindung der Anlage
+30883 : 3068 - : Status öffentliches Netz
+30901 : 5004 Hz : Netzfrequenz externer Netzanschluss
+30903 : 23289 V : Spannung externer Netzanschluss L1
+30905 : 0 V : Spannung externer Netzanschluss L2
+30907 : 0 V : Spannung externer Netzanschluss L3
+30909 : 569 A : Strom externer Netzanschluss L1
+30911 : 0 A : Strom externer Netzanschluss L2
+30913 : 0 A : Strom externer Netzanschluss L3
+30915 : 1461 - : Status Stromversorgung
+30917 : 303 - : Generatorzustand
+30925 : 1721 - : Verbindungsgeschwindigkeit von SMACOM A
+30927 : 1727 - : Duplexmodus von SMACOM A
+30929 : 307 - : Speedwire-Verbindungsstatus von SMACOM A
+30955 : 2292 - : Betriebsstatus der Batterie
+30977 : 778 A : Netzstrom Phase L1
+30979 : 0 A : Netzstrom Phase L2
+30981 : 0 A : Netzstrom Phase L3
+30983 : 0 W : Leistung der Photovoltaik
+30985 : 593 A : Gesamter Strom externer Netzanschluss
+30987 : -1 % : Fehler Batterieladezustand
+30989 : 54039 A : Maximal aufgetretener Batteriestrom in Laderichtung
+30991 : 60466 A : Maximal aufgetretener Batteriestrom in Entladerichtung
+30993 : 1006 - : Ladefaktor: Verhältnis Batterieladung/-endladung
+30995 : 8778048 s : Laufzeit des Batteriestatistikzählers
+30997 : 190 °C : Niedrigste gemessene Batterietemperatur
+30999 : 208 °C : Höchste gemessene Batterietemperatur
+31001 : 5266 V : Maximal aufgetretene Batteriespannung
+31003 : -1 s : Verbleibende Zeit bis zur Vollladung
+31005 : 7438073 s : Verbleibende Zeit bis zur Ausgleichsladung
+31007 : -1 s : Verbleibende Absorptionszeit der aktuellen Batterieladephase
+31009 : 28 % : Untere Entladegrenze für Eigenverbrauchsbereich
+31011 : 0 A : Gesamter Ausgangsstrom der Solar Laderegler
+31013 : 0 s : Verbleibende Mindestlaufzeit des Generators
+31015 : 307 - : Betriebszustand Master (Phase L1)
+31017 : 12601 - : -
+31025 : 12853 - : -
+31033 : 12601 - : -
+31041 : 12601 - : -
+31049 : 16777213 - : Slave 1: Status des Multifunktionsrelais
+31051 : 16777213 - : Slave 2: Status des Multifunktionsrelais
+31053 : 16777213 - : Betriebszustand Slave1 (Phase L2)
+31055 : 16777213 - : Betriebszustand Slave2 (Phase L3)
+31057 : 2614 - : Status Batterienutzungsbereich
+31059 : 16777213 - : Absorptionsphase aktiv
+31061 : 1130 - : Steuerung der Batterieladung über Kommunikation verfügbar
+31063 : 0 kWh : Gesamtenergie der Photovoltaik
+31065 : 0 Wh : Gesamtenergie der Photovoltaik heutiger Tag
+31067 : -1 kWh : Anzahl Ausgleichsladungen der Batterie
+31069 : -1 s : Anzahl Vollladungen der Batterie
+31071 : -1 % : Relative Batterieentladung seit letzter Vollladung
+31073 : -1 % : Relative Batterieentladung seit letzter Ausgleichsladung
+31075 : 57616 s : Laufzeit Energiezählung
+31077 : 0 Wh : Energie der Photovoltaik an Solar Laderegler
+31079 : 0 Wh : Energie der Photovoltaik an Solar Laderegler
+31081 : 0 Wh : Energie der Photovoltaik an Solar Laderegler
+31083 : 0 Wh : Energie der Photovoltaik an Solar Laderegler
+31085 : 0 W : Nennleistung im Zustand Ok
+31393 : 154 W : Momentane Batterieladung
+31395 : 0 W : Momentane Batterieentladung
+31397 : 0 Wh : Batterieladung
+31401 : 0 Wh : Batterieentladung
+31413 : 16777213 - : Slave 1: Status des Multifunktionsrelais
+31415 : 16777213 - : Slave 2: Status des Multifunktionsrelais
+31417 : 123 W : Leistung externer Netzanschluss
+31419 : 126 W : Leistung externer Netzanschluss L1
+31421 : 0 W : Leistung externer Netzanschluss L2
+31423 : 0 W : Leistung externer Netzanschluss L3
+31425 : 1 VAr : Blindleistung externer Netzanschluss
+31427 : 2 VAr : Blindleistung externer Netzanschluss L1
+31429 : 0 VAr : Blindleistung externer Netzanschluss L2
+31431 : 0 VAr : Blindleistung externer Netzanschluss L3
+31497 : -89 VAr : Blindleistung
+33001 : 16777213 - : Standby-Status
+33003 : 235 - : Betriebsstatus
+33013 : 8 - : Q(P), maximale Anzahl von Stützpunkten
+33019 : -3300 W : Bemessungswirkleistung WMaxInRtg
+33021 : 0 W : Bemessungswirkleistung WMinOutRtg
+33023 : 0 W : Bemessungswirkleistung WMinInRtg
+33025 : 3300 VA : Bemessungsscheinleistung VAMaxOutRtg
+33027 : 3300 VA : Bemessungsscheinleistung VAMaxInRtg
+33029 : 3300 VAr : Bemessungsblindleistung VArMaxQ1Rtg
+33031 : 3300 VAr : Bemessungsblindleistung VArMaxQ2Rtg
+33033 : -3300 VAr : Bemessungsblindleistung VArMaxQ3Rtg
+33035 : -3300 VAr : Bemessungsblindleistung VArMaxQ4Rtg
+33037 : 0 - : Bemessungs-cos φ PFMinQ1Rtg
+33039 : 0 - : Bemessungs-cos φ PFMinQ2Rtg
+33041 : 0 - : Bemessungs-cos φ PFMinQ3Rtg
+33043 : 0 - : Bemessungs-cos φ PFMinQ4Rtg
+33047 : 8 - : P(U), maximale Anzahl von Stützpunkten
+34657 : 303 - : Zustand digitaler Eingang
+34669 : 1130 - : Steuerung der Batterieladung über Kommunikation verfügbar
+35377 : 0 - : Anzahl Ereignisse für Benutzer
+35381 : 0 - : Anzahl Ereignisse für Installateur
+35385 : 0 - : Anzahl Ereignisse für Service
+40029 : 569 - : Allgemeiner Betriebszustand
+40031 : 408 Ah : Nennkapazität der Batterie
+40035 : 1785 - : Batterietyp
+40037 : 48 V : Batterienennspannung
+40063 : 33559300 - : Firmware-Version des Hauptprozessors
+40065 : 33554948 - : Firmware-Version der Logikkomponente
+40067 : -1292327501 - : Seriennummer
+40109 : 7587 - : Eingestellter Länderdatensatz
+40187 : 19584 Wh : Nennkapazität der Batterie
+40189 : 3300 W : Maximale Ladeleistung des Batteriestellers
+40191 : 3300 W : Maximale Entladeleistung des Batteriestellers
+40497 : 12336 - : -
+40531 : 302 - : Typ der AC-Unterverteilung
+40749 : 303 - : Zustand digitaler Eingang
+40783 : 0 - : Seriennummer Slave1 (Phase L2)
+40785 : 0 - : Seriennummer Slave2 (Phase L3)
+40789 : 16843009 - : Kommunikationsversion
+41279 : 381 - : Status QCG

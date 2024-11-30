@@ -1,0 +1,35 @@
+register,words,format1,format2,access,unit,name,id
+40016,1,S16,FIX0,WO,%,Normierte Wirkleistungsbegrenzung durch Anlagensteuerung,Inverter.WModCfg.WCtlComCfg.WNom
+40018,2,U32,TAGLIST,WO,-,Schnellabschaltung,Inverter.FstStop
+40022,1,S16,FIX2,WO,%,Normierte Wirkleistungsbegrenzung durch Anlagensteuerung,Inverter.VArModCfg.VArCtlComCfg.VArNomPrc
+40023,1,S16,FIX2,WO,%,Wirkleistungsvorgabe,Inverter.WModCfg.WCtlComCfg.WNomPrc
+40149,2,S32,FIX0,WO,W,Wirk- und Blindleistungsregelung über Kommunikation,Inverter.WModCfg.WCtlComCfg.WSpt
+40151,2,U32,TAGLIST,WO,-,Betriebsart des BMS,Inverter.WModCfg.WCtlComCfg.WCtlComAct
+40153,2,S32,FIX0,WO,VAr,Maximale Batterieladeleistung,Inverter.VArModCfg.VArCtlComCfg.VArSpt
+40236,2,U32,TAGLIST,WO,-,Maximale Batterieentladeleistung,CmpBMS.OpMod
+40795,2,U32,FIX0,WO,W,Sollwert der Netzaustauschleistung,CmpBMS.BatChaMaxW
+40799,2,U32,FIX0,WO,W,Energiesparmodus,CmpBMS.BatDschMaxW
+40801,2,S32,FIX0,WO,W,-,CmpBMS.GridWSpt
+40805,2,U32,TAGLIST,WO,-,-,Operation.EnSavMod
+40833,2,S32,FIX0,WO,VAr,-,Inverter.VArModCfg.VArCtlComCfg.VArSpt
+41175,2,S32,FIX0,WO,W,Begrenzung der Wirkleistungsaufnahme in %,Inverter.WModCfg.WCtlComCfg.W.phsA
+41177,2,S32,FIX0,WO,W,Begrenzung der Leistungsaufnahme in W,Inverter.WModCfg.WCtlComCfg.W.phsB
+41179,2,S32,FIX0,WO,W,Schnellabschaltung,Inverter.WModCfg.WCtlComCfg.W.phsC
+41181,2,S32,FIX0,WO,VAr,Normierte Wirkleistungsbegrenzung durch Anlagensteuerung,Inverter.VArModCfg.VArCtlComCfg.VArSpt.phsA
+41183,2,S32,FIX0,WO,VAr,Betriebsart des BMS,Inverter.VArModCfg.VArCtlComCfg.VArSpt.phsB
+41185,2,S32,FIX0,WO,VAr,Maximale Wirkleistung,Inverter.VArModCfg.VArCtlComCfg.VArSpt.phsC
+41249,2,S32,FIX2,WO,%,Minimale Wirkleistung,Inverter.WModCfg.WCtlComCfg.WMaxInNomPrc
+41251,2,S32,FIX0,WO,W,,Inverter.WModCfg.WCtlComCfg.WMaxIn
+41253,2,U32,TAGLIST,RW,-,,Inverter.FstStop
+41255,1,S16,FIX2,RW,%,Energiesparmodus,Inverter.WModCfg.WCtlComCfg.WNomPrc
+41256,1,S16,FIX2,RW,%,Wirkleistungsvorgabe,Inverter.VArModCfg.VArCtlComCfg.VArNomPrc
+41259,2,U32,TAGLIST,RW,-,Wirk- und Blindleistungsregelung über Kommunikation,CmpBMS.OpMod
+44039,2,S32,FIX2,RW,%,Maximale Batterieladeleistung,Inverter.WModCfg.WCtlComCfg.WSptMaxNom
+44041,2,S32,FIX2,RW,%,Maximale Batterieentladeleistung,Inverter.WModCfg.WCtlComCfg.WSptMinNom
+44143,2,U32,TAGLIST,RW,-,1041: übererregt (OvExt),Inverter.VArModCfg.PFCtlComCfg.PFExtIn
+44423,2,U32,TAGLIST,RW,-,,Operation.EnSavMod
+44425,2,S32,FIX0,RW,W,,Inverter.WModCfg.WCtlComCfg.WSpt
+44427,2,U32,TAGLIST,RW,-,,Inverter.WModCfg.WCtlComCfg.WCtlComAct
+44433,2,U32,FIX0,RW,W,,CmpBMS.BatChaMaxW
+44437,2,U32,FIX0,RW,W,,CmpBMS.BatDschMaxW
+44439,2,S32,FIX0,RW,W,,CmpBMS.GridWSpt
