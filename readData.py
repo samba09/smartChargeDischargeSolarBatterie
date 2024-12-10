@@ -48,7 +48,7 @@ class Frame:
     do_charge = False
     dont_discharge = False
     def print(self):
-        return f"price: {self.price}, at {self.startsAt}, charge/dont discharge: {self.do_charge},{self.dont_discharge}, sol: {self.prod}, pull: {self.pull}, push: {self.push}"
+        return f"price: {self.price}, at {self.startsAt}, charge/dont discharge: {self.do_charge},{self.dont_discharge}, sol: {self.prod}, pull: {self.pull}, push: {self.push}, prod_acc: {self.prod_acc}, cons_acc: {self.cons_acc}, cost_acc: {self.cost_acc}"
 
 #init
 for i in range(N):
@@ -95,6 +95,7 @@ def read_consumption():
 ######################
 
 def read_solcast(path):
+    factor = 0.5
     # Replace 'your_file.csv' with the path to your CSV file
     with open(path + '/solcast.csv', encoding='utf-8-sig', mode='r') as file:
         csv_reader = csv.DictReader(file)
@@ -105,8 +106,8 @@ def read_solcast(path):
             ptime = dateparser.parse(row['PeriodEnd']) + dt.timedelta(minutes = 30)
             ptime = ptime.replace(tzinfo=pytz.UTC)
             if ptime >= start_time and i < N:
-                data[i].prod = float(row['PvEstimate']) / 2
-                data[i+1].prod = float(row['PvEstimate']) / 2
+                data[i].prod = float(row['PvEstimate']) / 2 * factor
+                data[i+1].prod = float(row['PvEstimate']) / 2 * factor
                 #print(ptime, data[i].startsAt, data[i].prod, i)
                 i += 2
 
@@ -244,6 +245,8 @@ def calculation(p1,p2, charge_power):
 
 def calc(path, debug = 0):
     global start_time
+    global max_battery_capacity
+    global start_battery
     start_time = dt.datetime.now(tz=pytz.UTC)
     read_consumption()
     read_solcast(path)
@@ -251,11 +254,12 @@ def calc(path, debug = 0):
     price_min, price_max, price_avg, price_std = read_analyse_tibber(path, start_time)
 
     # read from battery:
-    capa, state = readCapacityAndState()
-    if capa > 5 and capa < 100 and state < capa and state > 0:
-        start_battery = state
-        max_battery_capacity = capa
-    print(f"read from battery capa:{capa}, state:{state}")
+    if debug == 0:
+        capa, state = readCapacityAndState()
+        if capa > 5 and capa < 100 and state < capa and state > 0:
+            start_battery = state
+            max_battery_capacity = capa
+    print(f"read from battery capa:{max_battery_capacity}, state:{start_battery}")
 
     c = calculation(0,0,0)
     print("Costs without interfere:", c)
