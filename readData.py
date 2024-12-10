@@ -5,9 +5,9 @@ import json
 import csv
 import numpy as np
 import math
-from modbus import readKapaitätAndState
+from modbus import readCapacityAndState
 from scipy.signal import find_peaks, peak_widths
-
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 ### defines
@@ -75,7 +75,11 @@ def read_consumption():
     tag = day + jahreszeit
     print(tag)
     last = []
-    with open('lastprofil.csv', encoding='utf-8-sig', mode='r') as file:
+
+
+    p = Path(__file__).with_name('lastprofil.csv')
+
+    with p.open(encoding='utf-8-sig', mode='r') as file:
         csv_reader = csv.DictReader(file)
         i = 0
         # Convert each row to a dictionary and print it
@@ -90,9 +94,9 @@ def read_consumption():
 
 ######################
 
-def read_solcast():
+def read_solcast(path):
     # Replace 'your_file.csv' with the path to your CSV file
-    with open('temp_data/solcast.csv', encoding='utf-8-sig', mode='r') as file:
+    with open(path + '/solcast.csv', encoding='utf-8-sig', mode='r') as file:
         csv_reader = csv.DictReader(file)
         
         i = 0
@@ -112,9 +116,9 @@ def read_solcast():
 
 ########################################
 
-def read_analyse_tibber(start_time):
+def read_analyse_tibber(path, start_time):
     global data
-    with open('temp_data/tibber.json', mode='r') as file:
+    with open(path + '/tibber.json', mode='r') as file:
 
         t = json.loads(file.read())
         i = 0
@@ -238,16 +242,16 @@ def calculation(p1,p2, charge_power):
 
     return cost_acc
 
-def calc(debug = 0):
+def calc(path, debug = 0):
     global start_time
     start_time = dt.datetime.now(tz=pytz.UTC)
     read_consumption()
-    read_solcast()
+    read_solcast(path)
     #print("solcast:", solcast)
-    price_min, price_max, price_avg, price_std = read_analyse_tibber(start_time)
+    price_min, price_max, price_avg, price_std = read_analyse_tibber(path, start_time)
 
     # read from battery:
-    capa, state = readKapaitätAndState()
+    capa, state = readCapacityAndState()
     if capa > 5 and capa < 100 and state < capa and state > 0:
         start_battery = state
         max_battery_capacity = capa
@@ -317,13 +321,15 @@ def calc(debug = 0):
 
     return data[0].do_charge, data[0].dont_discharge
 
+def getBatteryActions(path):
+    do_charge, dont_discharge = calc(path, debug=0)
+    print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
+    return (do_charge, dont_discharge)
+
 if __name__ == '__main__':
-    do_charge, dont_discharge = calc(debug=1)
+    do_charge, dont_discharge = calc('temp_data', debug=1)
     print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
 
-def getBatteryActions():
-    do_charge, dont_discharge = calc(debug=0)
-    print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
-    return do_charge, dont_discharge
+
 
 

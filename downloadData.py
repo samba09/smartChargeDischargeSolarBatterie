@@ -1,7 +1,7 @@
 
 import requests
 
-def downloadData():
+def downloadData(path):
     ## tibber 
 
     tibber_payload = {"query":"{viewer{homes{currentSubscription{priceInfo{current{total energy tax startsAt}today{total startsAt}tomorrow{total startsAt}}}}}}"}
@@ -9,7 +9,7 @@ def downloadData():
 
     response = requests.post("https://api.tibber.com/v1-beta/gql",  json=tibber_payload, headers=header)
 
-    with open('temp_data/tibber.json', mode='w') as file:
+    with open(path + '/tibber.json', mode='w') as file:
         file.write(response.text)
 
 
@@ -21,10 +21,10 @@ def downloadData():
 
     response = requests.request("GET", url, headers=header, data=payload)
 
-    with open('temp_data/solcast.csv', mode='w') as file:
+    with open(path + '/solcast.csv', mode='w') as file:
         file.write(response.text)
 
     print("done")
 
 if __name__ == '__main__':
-    downloadData()
+    downloadData("temp_data")

@@ -1,0 +1,7 @@
+dateparser
+matplotlib
+numpy
+pyModbusTCP
+pytz
+Requests
+scipy

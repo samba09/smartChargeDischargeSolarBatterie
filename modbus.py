@@ -7,36 +7,34 @@ import csv
 
 
 
-
-
-
-
-
-
 logging.basicConfig()
 logging.getLogger('pyModbusTCP.client').setLevel(logging.DEBUG)
 
 
 allregister = []
-# Replace 'your_file.csv' with the path to your CSV file
-with open('sunnyislandregisterRO.csv', encoding='utf-8-sig', mode='r') as file:
-    csv_reader = csv.DictReader(file)
-    
-    # Convert each row to a dictionary and print it
-    for row in csv_reader:
-        allregister.append(row)
-
-#print(allregister)
 regdict = {}
-for r in allregister:
-    regdict[r["register"]]=r
+def readRegister():
+    global allregister
+    global regdict
+    # Replace 'your_file.csv' with the path to your CSV file
+    with open('sunnyislandregisterRO.csv', encoding='utf-8-sig', mode='r') as file:
+        csv_reader = csv.DictReader(file)
+        
+        # Convert each row to a dictionary and print it
+        for row in csv_reader:
+            allregister.append(row)
+
+    #print(allregister)
+    
+    for r in allregister:
+        regdict[r["register"]]=r
 
 
 def createConnection():
     connection = ModbusClient(host="192.168.0.208", port=502, unit_id=3, auto_open=True)
     return connection
 
-def readKapaitätAndState():
+def readCapacityAndState():
     c = createConnection()
     regs = c.read_input_registers(40187, 2)
     capa = ctypes.c_int32(util.word_list_to_long(regs)[0]).value
@@ -56,6 +54,7 @@ def readKapaitätAndState():
     return capa_rel, state
 
 if __name__ == '__main__':
+    readRegister()
     # Execute when the module is not initialized from an import stateme
 
     # TCP auto connect on first modbus request
