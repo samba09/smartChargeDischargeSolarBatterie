@@ -125,7 +125,9 @@ def read_analyse_tibber(path, start_time):
         i = 0
         for e in t['data']['viewer']['homes'][0]['currentSubscription']['priceInfo']['today']:
             ptime = dateparser.parse(e['startsAt'])
+            
             if ptime >= start_time:
+                print(ptime, start_time,  e['total'])
                 data[i].price = e['total']
                 data[i+1].price = e['total']
                 data[i+2].price = e['total']
@@ -291,8 +293,6 @@ def calc(path, debug = 0):
             charge_at = min_cost[0]
             print("best charge point:", min_cost)
 
-    print(f"forbidd discharge when below: {discharge_at}, charge when below: {charge_at}")
-
     price = calculation(discharge_at,charge_at,1)
 
     print(f"price: {price}, production sum: {data[-1].prod_acc}, consumption sum: {data[-1].cons_acc}")
@@ -323,17 +323,25 @@ def calc(path, debug = 0):
 
         plt.show()
 
-    return data[0].do_charge, data[0].dont_discharge
+    return data[0].do_charge, data[0].dont_discharge, charge_at, discharge_at
 
 def getBatteryActions(path):
-    do_charge, dont_discharge = calc(path, debug=0)
-    print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
-    return (do_charge, dont_discharge)
+    try:
+        do_charge, dont_discharge, charge_point, discharge_point = calc(path, debug=0)
+        print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
+        print(f"forbidd discharge when below: {discharge_point}, charge when below: {charge_point}")
+        return (do_charge, dont_discharge, charge_point, discharge_point, "")
+    except Exception as e:
+        return (False, False, 0,0, "exeption, calc not beeing called")
+
 
 if __name__ == '__main__':
-    do_charge, dont_discharge = calc('temp_data', debug=1)
-    print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
-
+    try:
+        do_charge, dont_discharge, charge_point, discharge_point = calc('temp_data', debug=1)
+        print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
+        print(f"forbidd discharge when below: {discharge_point}, charge when below: {charge_point}")
+    except Exception as e:
+        print("error", "exeption, calc not beeing called")
 
 
 
