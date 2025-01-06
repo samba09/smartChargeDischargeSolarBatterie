@@ -9,9 +9,10 @@ def downloadData(path):
 
     response = requests.post("https://api.tibber.com/v1-beta/gql",  json=tibber_payload, headers=header)
 
-    with open(path + '/tibber.json', mode='w') as file:
-        file.write(response.text)
-
+    if response.status_code == requests.codes.ok:
+        with open(path + '/tibber.json', mode='w') as file:
+            file.write(response.text)
+    
 
     ### solcast
 
@@ -21,8 +22,9 @@ def downloadData(path):
 
     response = requests.request("GET", url, headers=header, data=payload)
 
-    with open(path + '/solcast.csv', mode='w') as file:
-        file.write(response.text)
+    if response.status_code == requests.codes.ok:
+        with open(path + '/solcast.csv', mode='w') as file:
+            file.write(response.text)
 
     print("done")
 

@@ -9,6 +9,7 @@ from modbus import readCapacityAndState
 from scipy.signal import find_peaks, peak_widths
 from pathlib import Path
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 ### defines
 min_peakheight = 0.04 # cent
@@ -21,10 +22,8 @@ price_battery = 0.04 # Euro per kWh
 # globals
 debug = 0
 N = 24*2*4 # two days a 4 points per hour (15 min)
+timezone = pytz.timezone('Europe/Berlin')
 
-data = []
-start_time = dt.datetime.now(tz=pytz.UTC)
-#start_time = dateparser.parse('2024-11-06T00:00:00.000+01:00')
 start_battery = 0  # kWh will be fetched from battery inverter
 
 class Frame:
@@ -49,11 +48,13 @@ class Frame:
     dont_discharge = False
     def print(self):
         return f"price: {self.price}, at {self.startsAt}, charge/dont discharge: {self.do_charge},{self.dont_discharge}, sol: {self.prod}, pull: {self.pull}, push: {self.push}, prod_acc: {self.prod_acc}, cons_acc: {self.cons_acc}, cost_acc: {self.cost_acc}"
-
-#init
-for i in range(N):
-    data.append(Frame(start_time + dt.timedelta(minutes = 15*i)))
     
+def round_up_to_next_hour(t):
+    # Check if datetime is already at the start of an hour
+    if t.minute == 0 and t.second == 0 and t.microsecond == 0:
+        return t
+    # Otherwise, round up to the next full hour
+    return (t + dt.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
 def read_consumption():
 
@@ -95,7 +96,6 @@ def read_consumption():
 ######################
 
 def read_solcast(path):
-    factor = 0.5
     # Replace 'your_file.csv' with the path to your CSV file
     with open(path + '/solcast.csv', encoding='utf-8-sig', mode='r') as file:
         csv_reader = csv.DictReader(file)
@@ -103,11 +103,11 @@ def read_solcast(path):
         i = 0
         # Convert each row to a dictionary and print it
         for row in csv_reader:
-            ptime = dateparser.parse(row['PeriodEnd']) + dt.timedelta(minutes = 30)
+            ptime = dateparser.parse(row['PeriodEnd']) - dt.timedelta(minutes = 30)
             ptime = ptime.replace(tzinfo=pytz.UTC)
             if ptime >= start_time and i < N:
-                data[i].prod = float(row['PvEstimate']) / 2 * factor
-                data[i+1].prod = float(row['PvEstimate']) / 2 * factor
+                data[i].prod = float(row['PvEstimate']) / 4
+                data[i+1].prod = float(row['PvEstimate']) / 4
                 #print(ptime, data[i].startsAt, data[i].prod, i)
                 i += 2
 
@@ -247,9 +247,22 @@ def calculation(p1,p2, charge_power):
 
 def calc(path, debug = 0):
     global start_time
+    global data
+    error = "noerror"
     global max_battery_capacity
     global start_battery
+
+    #init
+    data = []
+
     start_time = dt.datetime.now(tz=pytz.UTC)
+    #start_time = dateparser.parse('2024-11-06T00:00:00.000+01:00')
+    print("start_time", start_time)
+    start_time = round_up_to_next_hour(start_time)
+    print("start_time", start_time)
+    for i in range(N):
+        data.append(Frame(start_time + dt.timedelta(minutes = 15*i)))
+
     read_consumption()
     read_solcast(path)
     #print("solcast:", solcast)
@@ -297,51 +310,66 @@ def calc(path, debug = 0):
 
     print(f"price: {price}, production sum: {data[-1].prod_acc}, consumption sum: {data[-1].cons_acc}")
 
+
+    # Set figure size for a 4.7-inch diagonal display
+    fig_height= 4.5  # in inches
+    fig_width = 8  # in inches
+    dpi = 120 # Resolution
+    fig, (ax1) = plt.subplots(figsize=(fig_width, fig_height), dpi=dpi)
+
+
+    ax12 = ax1.twinx()
+    ax12.plot([d.startsAt for d in data], [d.price for d in data], color = 'black')
+    ax12.set_ylabel("Price in €")
+    ax1.plot([d.startsAt for d in data], [d.prod*4 for d in data], color = 'black', linestyle='--')
+    ax1.set_ylabel("Solar in kW")
+    #ax1.plot([d.cons for d in data], color='red')
+    # Format the x-axis with date and hour
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%a %H:%M', tz=timezone))
+    ax1.xaxis.set_major_locator(mdates.HourLocator(interval=6))  # Major ticks every 6 hours
+    ax1.xaxis.set_minor_locator(mdates.HourLocator(interval=1))  # Minor ticks every hour
+
+    """
+    ax2.plot([d.push for d in data], color='green')
+    ax2.plot([d.pull for d in data], color='red')
+    ax22 = ax2.twinx()
+    ax22.plot([d.soc for d in data], color='gray')
+
+    ax3.plot([d.cost for d in data], color='red')
+    ax32 = ax3.twinx()
+    ax32.plot([d.cost_acc for d in data], color='orange')
+    ax32.plot([d.original_cost_acc for d in data], color='darkorange')
+    """
+
+    try:
+        plt.savefig(path + '/4_7_inch_plot.png', dpi=dpi, bbox_inches='tight')
+    except Exception as e:
+        error = type(e).__name__ +  "–" + e
+
     if debug:
         for d in data:
             print(d.print())
-
-
-
-        fig, (ax1, ax2, ax3) = plt.subplots(3)
-
-
-        ax12 = ax1.twinx()
-        ax12.plot([d.price for d in data],  color='orange')
-        ax1.plot([d.prod for d in data], color='green')
-        ax1.plot([d.cons for d in data], color='red')
-
-        ax2.plot([d.push for d in data], color='green')
-        ax2.plot([d.pull for d in data], color='red')
-        ax22 = ax2.twinx()
-        ax22.plot([d.soc for d in data], color='gray')
-
-        ax3.plot([d.cost for d in data], color='red')
-        ax32 = ax3.twinx()
-        ax32.plot([d.cost_acc for d in data], color='orange')
-        ax32.plot([d.original_cost_acc for d in data], color='darkorange')
-
         plt.show()
 
-    return data[0].do_charge, data[0].dont_discharge, charge_at, discharge_at
+    return data[0].do_charge, data[0].dont_discharge, charge_at, discharge_at, error
 
 def getBatteryActions(path):
     try:
-        do_charge, dont_discharge, charge_point, discharge_point = calc(path, debug=0)
+        do_charge, dont_discharge, charge_point, discharge_point, error = calc(path, debug=0)
         print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
         print(f"forbidd discharge when below: {discharge_point}, charge when below: {charge_point}")
-        return (do_charge, dont_discharge, charge_point, discharge_point, "")
+        return (do_charge, dont_discharge, charge_point, discharge_point, error)
     except Exception as e:
-        return (False, False, 0,0, "exeption, calc not beeing called")
+        return (False, False, 0,0, "exception in getBatteryActions")
 
 
 if __name__ == '__main__':
     try:
-        do_charge, dont_discharge, charge_point, discharge_point = calc('temp_data', debug=1)
+        do_charge, dont_discharge, charge_point, discharge_point, error = calc('temp_data', debug=1)
         print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
         print(f"forbidd discharge when below: {discharge_point}, charge when below: {charge_point}")
     except Exception as e:
-        print("error", "exeption, calc not beeing called")
+        print("error", "exception in __main__", e)
 
 
 
