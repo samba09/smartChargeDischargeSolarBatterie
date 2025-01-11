@@ -5,3 +5,5 @@ pyModbusTCP
 pytz
 Requests
 scipy
+zipfile
+Pillow

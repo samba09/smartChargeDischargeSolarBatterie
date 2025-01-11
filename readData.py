@@ -10,7 +10,7 @@ from scipy.signal import find_peaks, peak_widths
 from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-
+from convertPNG import convertImage
 ### defines
 min_peakheight = 0.04 # cent
 max_power_bat = 3.300 # kW
@@ -312,11 +312,11 @@ def calc(path, debug = 0):
 
 
     # Set figure size for a 4.7-inch diagonal display
-    fig_height= 4.5  # in inches
-    fig_width = 8  # in inches
-    dpi = 120 # Resolution
-    fig, (ax1) = plt.subplots(figsize=(fig_width, fig_height), dpi=dpi)
-
+    fig_height= 4.12  # in inches
+    fig_width = 6.47 # in inches
+    dpi = 150 # Resolution 
+    fig = plt.figure(figsize=(fig_width, fig_height), dpi=dpi)
+    ax1 = fig.gca()
 
     ax12 = ax1.twinx()
     ax12.plot([d.startsAt for d in data], [d.price for d in data], color = 'black')
@@ -343,6 +343,7 @@ def calc(path, debug = 0):
 
     try:
         plt.savefig(path + '/4_7_inch_plot.png', dpi=dpi, bbox_inches='tight')
+        convertImage(path)
     except Exception as e:
         error = type(e).__name__ +  "–" + e
 
