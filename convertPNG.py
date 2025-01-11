@@ -6,11 +6,20 @@ import gzip
 def convertImage(path):
     # open method used to open different extension image file
     im = Image.open(path + "/4_7_inch_plot.png")
+  
+    
     # convert to grayscale
     im = im.convert(mode='L')
+    width, height = im.size
+    if (width > 960):
+        area = ((width-960) / 2, (height - 540)/2, (width-960) / 2+960, (height - 540)/2+540)
+        print(area)
+        im = im.crop(area)
+    print(im.size)
+    #im.show()
 
     # Write out the output file.
-    with gzip.open(path + "/4_7_inch_plot.raw.gz", 'wb') as f:
+    with open(path + "/4_7_inch_plot.raw", 'wb') as f:
         #f.write("960")
         #f.write("540")
         #f.write(
