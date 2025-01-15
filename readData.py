@@ -24,7 +24,7 @@ debug = 0
 N = 24*2*4 # two days a 4 points per hour (15 min)
 timezone = pytz.timezone('Europe/Berlin')
 
-start_battery = 00  # kWh will be fetched from battery inverter
+start_battery = 0  # kWh will be fetched from battery inverter
 
 class Frame:
     def __init__(self, startsAt):
@@ -261,7 +261,7 @@ def calc(path, debug = 0):
     data = []
 
     start_time = dt.datetime.now(tz=pytz.UTC)
-    start_time = dateparser.parse('2025-01-15T08:00:00.000+01:00')
+    #start_time = dateparser.parse('2025-01-15T11:00:00.000+01:00')
     print("start_time", start_time)
     start_time = round_up_to_next_hour(start_time)
     print("start_time", start_time)
