@@ -24,7 +24,7 @@ debug = 0
 N = 24*2*4 # two days a 4 points per hour (15 min)
 timezone = pytz.timezone('Europe/Berlin')
 
-start_battery = 0  # kWh will be fetched from battery inverter
+start_battery = 00  # kWh will be fetched from battery inverter
 
 class Frame:
     def __init__(self, startsAt):
@@ -105,6 +105,11 @@ def read_solcast(path):
         for row in csv_reader:
             ptime = dateparser.parse(row['PeriodEnd']) - dt.timedelta(minutes = 30)
             ptime = ptime.replace(tzinfo=pytz.UTC)
+            
+            if i == 0:
+                while  data[i].startsAt < ptime:
+                    i += 2
+
             if ptime >= start_time and i < N:
                 data[i].prod = float(row['PvEstimate']) / 4
                 data[i+1].prod = float(row['PvEstimate']) / 4
@@ -256,7 +261,7 @@ def calc(path, debug = 0):
     data = []
 
     start_time = dt.datetime.now(tz=pytz.UTC)
-    #start_time = dateparser.parse('2024-11-06T00:00:00.000+01:00')
+    start_time = dateparser.parse('2025-01-15T08:00:00.000+01:00')
     print("start_time", start_time)
     start_time = round_up_to_next_hour(start_time)
     print("start_time", start_time)
@@ -288,7 +293,7 @@ def calc(path, debug = 0):
     min_cost = min(discharge_over_price, key = lambda x: x[1])
 
     discharge_at = min_cost[0]
-    print("discharge at:", discharge_at, min_cost)
+    print("without charging dont discharge at:", discharge_at, min_cost)
 
     # soc at end of minimal cost zero? Try with charging
     if min_cost[2] < 0.1:
@@ -308,6 +313,7 @@ def calc(path, debug = 0):
 
     price = calculation(discharge_at,charge_at,1)
 
+    print(f"charge at {charge_at}, dont discharge at:", discharge_at)
     print(f"price: {price}, production sum: {data[-1].prod_acc}, consumption sum: {data[-1].cons_acc}")
 
 
@@ -315,8 +321,10 @@ def calc(path, debug = 0):
     fig_height= 4.12  # in inches
     fig_width = 6.47 # in inches
     dpi = 150 # Resolution 
-    fig = plt.figure(figsize=(fig_width, fig_height), dpi=dpi)
-    ax1 = fig.gca()
+    #fig = plt.figure(figsize=(fig_width, fig_height), dpi=dpi)
+    #ax1 = fig.gca()
+    fig, (ax1, ax2) = plt.subplots(2, gridspec_kw={'height_ratios': [5, 1]})
+    fig.set_size_inches(fig_width, fig_height)
 
     ax12 = ax1.twinx()
     ax12.plot([d.startsAt for d in data], [d.price for d in data], color = 'black')
@@ -329,12 +337,20 @@ def calc(path, debug = 0):
     ax1.xaxis.set_major_locator(mdates.HourLocator(interval=6))  # Major ticks every 6 hours
     ax1.xaxis.set_minor_locator(mdates.HourLocator(interval=1))  # Minor ticks every hour
 
+    
+    #ax2.plot([d.push for d in data], color='green')
+    #ax2.plot([d.pull for d in data], color='red')
+    #ax22 = ax2.twinx()
+    ax2.plot([d.startsAt for d in data], [d.soc for d in data], color='gray')
+    # Format the x-axis with date and hour
+   
+    ax2.xaxis.set_major_formatter(mdates.DateFormatter('', tz=timezone))
+    ax2.xaxis.set_major_locator(mdates.HourLocator(interval=6))  # Major ticks every 6 hours
+    ax2.xaxis.set_minor_locator(mdates.HourLocator(interval=1))  # Minor ticks every hour
+    ax2.yaxis.set_label_position("right")
+    ax2.yaxis.tick_right()
+    ax2.set_ylabel("Bat kWh")
     """
-    ax2.plot([d.push for d in data], color='green')
-    ax2.plot([d.pull for d in data], color='red')
-    ax22 = ax2.twinx()
-    ax22.plot([d.soc for d in data], color='gray')
-
     ax3.plot([d.cost for d in data], color='red')
     ax32 = ax3.twinx()
     ax32.plot([d.cost_acc for d in data], color='orange')
@@ -365,12 +381,9 @@ def getBatteryActions(path):
 
 
 if __name__ == '__main__':
-    try:
         do_charge, dont_discharge, charge_point, discharge_point, error = calc('temp_data', debug=1)
         print(f"do charge: {do_charge} and dont discharge: {dont_discharge}")
         print(f"forbidd discharge when below: {discharge_point}, charge when below: {charge_point}")
-    except Exception as e:
-        print("error", "exception in __main__", e)
 
 
 
