@@ -51,6 +51,8 @@ def readCapacityAndState():
     state = (soc - (untere + tief))*capa / 1000
     capa_rel = (capa - (untere + tief)*capa) / 1000
 
+    print(f"soc= {soc}, state= {state}, capa={capa}, minimum={untere+tief}, capa relative={capa_rel}")
+
     return capa_rel, state
 
 if __name__ == '__main__':
@@ -135,6 +137,7 @@ if __name__ == '__main__':
             for r in out.keys():
                 print(r, ":", out[r][0], regdict[r]["unit"], ":", regdict[r]["name"])
             print(time.time()-start)
+            print("readCapacityAndState", readCapacityAndState())
             time.sleep(5)
 
 
