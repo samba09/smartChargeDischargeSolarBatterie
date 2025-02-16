@@ -325,12 +325,14 @@ def calc(path, debug = 0):
     #ax1 = fig.gca()
     fig, (ax1, ax2) = plt.subplots(2, gridspec_kw={'height_ratios': [5, 1]})
     fig.set_size_inches(fig_width, fig_height)
-
     ax12 = ax1.twinx()
     ax12.plot([d.startsAt for d in data], [d.price for d in data], color = 'black')
     ax12.set_ylabel("Price in €")
+    ax12.set_ylim(0.2, max(0.8, max([d.price for d in data])))
+
     ax1.plot([d.startsAt for d in data], [d.prod*4 for d in data], color = 'black', linestyle='--')
     ax1.set_ylabel("Solar in kW")
+    ax1.set_ylim(-0.1, max(4, max([d.prod*4 for d in data])))
     #ax1.plot([d.cons for d in data], color='red')
     # Format the x-axis with date and hour
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%a %H:%M', tz=timezone))
@@ -342,6 +344,7 @@ def calc(path, debug = 0):
     #ax2.plot([d.pull for d in data], color='red')
     #ax22 = ax2.twinx()
     ax2.plot([d.startsAt for d in data], [d.soc for d in data], color='gray')
+    ax2.set_ylim(-0.1, 1.1*max(10, max([d.soc for d in data])))
     # Format the x-axis with date and hour
    
     ax2.xaxis.set_major_formatter(mdates.DateFormatter('', tz=timezone))
